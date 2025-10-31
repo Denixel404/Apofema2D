@@ -2,8 +2,8 @@ import tkinter as tk
 import sys
 import os
 
-# pyinstaller --name="Apofema2D beta 0.1.1" --onefile --noconsole --icon=img/Logo.ico main.py
-# pyinstaller Apofema2D_beta_0.1.1.spec
+# Компиляция
+# pyinstaller Apofema2D.spec
 
 def resource_path(relative_path): # Получение правильного пути
     try:
@@ -19,7 +19,7 @@ win.geometry(f"{width}x{height}+100+30")
 win.title("Апофема2D")
 iconPath = resource_path("img/Logo.ico") # Путь к иконке
 win.iconbitmap(iconPath)
-version = "v1.0" # Текущая версия приложения
+version = "v1.1" # Текущая версия приложения
 
 #lock_color = False
 current_figure = "rect" #  Выбранная фигура
@@ -28,6 +28,7 @@ scale = 40 # Размер клеток на поле
 language = "ru" # Язык приложения
 figure_color = "black" # Выбранный цвет фигур
 scaling = ["rect", "oval", "line", "dash"] # Разрешенные фигуры для масштабирования
+black_save = ["signature", "curve"] # Запрещённые для сохранения объекты
 
 objects = [] # Список фигур на поле
 

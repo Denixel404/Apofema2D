@@ -1,14 +1,19 @@
 import config as c
 
+error = "Ошибка"
+info = "Инфо"
+confirmation = "Подтвердите действие"
 settings = "Настройки"
 clear = "Очистить"
 last = "Отменить изменение"
+change_color = "Сменить цвет"
 rect = "Квадрат"
 oval = "Овал"
 line = "Линия"
 dot = "Точка"
 signature = "Подпись"
 dash = "Пунктир"
+curve = "Кривая"
 enter = "Ввод"
 welcome = "Добро пожаловать в Апофема2D"
 settings_lang = "Язык приложения"
@@ -28,45 +33,80 @@ settings_scale = "Масштаб поля"
 settings_scale_descr = "Измените размер клеток на поле"
 settings_scale_alert = "Изменение масштаба полностью очистит поле. Продолжить?"
 
-def lang(language):
-    global settings, clear, last, rect, oval, line, dot, signature, enter, welcome, settings_rutext, settings_entext, settings_lang, dash
-    if language == "en":
-        settings = "Settings"
-        clear = "Clear all"
-        last = "Undo changes"
-        rect = "Rectangle"
-        oval = "Oval"
-        line = "Line"
-        dot = "Point"
-        signature = "Signature"
-        dash = "Stipple"
-        enter = "Enter"
-        welcome = "Welcome to Apothema2D!"
-        settings_lang = "Proramm Language"
-        settings_rutext = "Russian"
-        settings_entext = "English"
-    elif language == "ru":
-        settings = "Настройки"
-        clear = "Очистить"
-        last = "Отменить изменение"
-        rect = "Квадрат"
-        oval = "Овал"
-        line = "Линия"
-        dot = "Точка"
-        signature = "Подпись"
-        dash = "Пунктир"
-        enter = "Ввод"
-        welcome = "Добро пожаловать в Апофема2D"
-        settings_lang = "Язык приложения"
-        settings_rutext = "Русский"
-        settings_entext = "Английский"
+# Английская версия
+error2 = "Error"
+info2 = "Info"
+confirmation2 = "Confirm the action"
+settings2 = "Settings"
+clear2 = "Clear all"
+last2 = "Undo change"
+change_color2 = "Сhange color"
+rect2 = "Rectangle"
+oval2 = "Oval"
+line2 = "Line"
+dot2 = "Point"
+signature2 = "Signature"
+dash2 = "Dash"
+curve2 = "Curve"
+enter2 = "Enter"
+welcome2 = "Welcome to Apothema2D"
+settings_lang2 = "Programm language"
+settings_lang_descr2 = "The language of the application will change after restarting"
+settings_rutext2 = "Russian"
+settings_entext2 = "English"
+lang_alert2 = "The language of the application will change after restarting"
+settings_work_color2 = "Color of figures"
+settings_work_color_descr2 = "Change the color of the drawing"
+work_color2 = "Auto-color"
+alert_auto_color12 = "Auto-color is on"
+alert_auto_color22 = "Auto-color is off"
+user_color_alert2 = "Auto-color has been replaced with your color"
+user_color_alert12 = "Invalid HEX-code"
+user_color_alert22 = "The default color is returned"
+settings_scale2 = "Field scale"
+settings_scale_descr2 = "Change the scale of the cells on the field"
+settings_scale_alert2 = "Changing the scale will completely clear the field. Continue?"
+
+# def lang(language):
+#     global settings, clear, last, rect, oval, line, dot, signature, enter, welcome, settings_rutext, settings_entext, settings_lang, dash
+#     global settings_lang_descr, work_color, 
+#     if language == "en":
+#         settings = "Settings"
+#         clear = "Clear all"
+#         last = "Undo changes"
+#         rect = "Rectangle"
+#         oval = "Oval"
+#         line = "Line"
+#         dot = "Point"
+#         signature = "Signature"
+#         dash = "Stipple"
+#         enter = "Enter"
+#         welcome = "Welcome to Apothema2D!"
+#         settings_lang = "Proramm Language"
+#         settings_rutext = "Russian"
+#         settings_entext = "English"
+#     elif language == "ru":
+#         settings = "Настройки"
+#         clear = "Очистить"
+#         last = "Отменить изменение"
+#         rect = "Квадрат"
+#         oval = "Овал"
+#         line = "Линия"
+#         dot = "Точка"
+#         signature = "Подпись"
+#         dash = "Пунктир"
+#         enter = "Ввод"
+#         welcome = "Добро пожаловать в Апофема2D"
+#         settings_lang = "Язык приложения"
+#         settings_rutext = "Русский"
+#         settings_entext = "Английский"
         
-def langRu():
-    global welcome
-    lang("ru")
-    print(welcome)
+# def langRu():
+#     global welcome
+#     lang("ru")
+#     print(welcome)
     
-def langEn():
-    global welcome
-    lang("en")
-    print(welcome)
+# def langEn():
+#     global welcome
+#     lang("en")
+#     print(welcome)

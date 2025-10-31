@@ -55,23 +55,29 @@ def save(): # Выгрузка и сохранение данных при за�
 if c.language == "ru": 
     pass # По умолчанию
 elif c.language == "en": # Английский перевод
-    txt.lang("en")
-    print(txt.settings)
-    GUI.sett_btn.configure(text=txt.settings)
-    GUI.rect_btn.configure(text=txt.rect)
-    GUI.oval_btn.configure(text=txt.oval)
-    GUI.line_btn.configure(text=txt.line)
-    GUI.signature_btn.configure(text=txt.signature)
-    GUI.dot_btn.configure(text=txt.dot)
-    GUI.dash_btn.configure(text=txt.dash)
-    GUI.clear_btn.configure(text=txt.clear)
-    GUI.del_last_btn.configure(text=txt.last)
-    GUI.line_btn.configure(text=txt.line)
-    GUI.panel_title.configure(text=txt.welcome)
-    GUI.settings_lang.configure(text=txt.settings_lang)
-    GUI.ru_btn.configure(text=txt.settings_rutext)
-    GUI.en_btn.configure(text=txt.settings_entext)
-    GUI.settings_scale_text.configure(text=txt.settings_scale)
+    GUI.sett_btn.configure(text=txt.settings2)
+    GUI.rect_btn.configure(text=txt.rect2)
+    GUI.oval_btn.configure(text=txt.oval2)
+    GUI.line_btn.configure(text=txt.line2)
+    GUI.signature_btn.configure(text=txt.signature2)
+    GUI.dot_btn.configure(text=txt.dot2)
+    GUI.dash_btn.configure(text=txt.dash2)
+    GUI.curve_btn.configure(text=txt.curve2)
+    GUI.clear_btn.configure(text=txt.clear2)
+    GUI.color_btn.configure(text=txt.change_color2)
+    GUI.del_last_btn.configure(text=txt.last2)
+    GUI.line_btn.configure(text=txt.line2)
+    GUI.panel_title.configure(text=txt.welcome2)
+    GUI.settings_lang.configure(text=txt.settings_lang2)
+    GUI.settings_lang_descr.configure(text=txt.settings_lang_descr2)
+    GUI.ru_btn.configure(text=txt.settings_rutext2)
+    GUI.en_btn.configure(text=txt.settings_entext2)
+    GUI.settings_work_color.configure(text=txt.work_color2)
+    GUI.settings_work_color_descr.configure(text=txt.settings_work_color_descr2)
+    GUI.work_color_button.configure(text=txt.work_color2)
+    GUI.settings_choose_color_btn.configure(text=txt.enter2)
+    GUI.settings_scale_text.configure(text=txt.settings_scale2)
+    GUI.settings_scale_text_descr.configure(text=txt.settings_scale_descr2)
 
 # Размещение объектов на экране
 GUI.barline.place(x=765, y=0, relheight=1, relwidth=1)
@@ -89,9 +95,11 @@ GUI.line_btn.place(x=78*3,y=0)
 GUI.dot_btn.place(x=78*4, y=0)
 GUI.signature_btn.place(x=78*5, y=0)
 GUI.dash_btn.place(x=78*6, y=0)
+GUI.curve_btn.place(x=78*7, y=0)
 GUI.canvas.place(x=5, y=5)
 GUI.clear_btn.place(x=0, y=55)
 GUI.del_last_btn.place(x=78, y=55)
+GUI.color_btn.place(x=213, y=55)
 
 # Разлиновка поля
 utils.lines(GUI.canvas, c.scale)
@@ -107,21 +115,29 @@ except Exception as e:
 for el in c.objects:
     print(f"object: {el}")
     el_index = c.objects.index(el)
-    if el[4] == "rect":
-        GUI.canvas.create_rectangle(el[0], el[1], el[2], el[3], outline=el[5], width=3)
+    if el[1] == "curve":
+        id = GUI.canvas.create_line(el[0], fill=el[3], width=3)
+        el[2] = id # Замена идентификатора фигуры на новый
+    elif el[4] == "rect":
+        id = GUI.canvas.create_rectangle(el[0], el[1], el[2], el[3], outline=el[5], width=3)
+        el[6] = id # Замена идентификатора фигуры на новый
     elif el[4] == "oval":
-        GUI.canvas.create_oval(el[0], el[1], el[2], el[3], outline=el[5], width=3)
+        id = GUI.canvas.create_oval(el[0], el[1], el[2], el[3], outline=el[5], width=3)
+        el[6] = id # Замена идентификатора фигуры на новый
     elif el[4] == "dot":
-        GUI.canvas.create_oval(el[0] - 7, el[1] - 7, el[2] + 7, el[3] + 7, fill=el[5], width=3)
+        id = GUI.canvas.create_oval(el[0] - 7, el[1] - 7, el[2] + 7, el[3] + 7, fill=el[5], width=3)
+        el[6] = id # Замена идентификатора фигуры на новый
     elif el[4] == "line":
-        GUI.canvas.create_line(el[0], el[1], el[2], el[3], fill=el[5], width=3)
+        id = GUI.canvas.create_line(el[0], el[1], el[2], el[3], fill=el[5], width=3)
+        el[6] = id # Замена идентификатора фигуры на новый
     elif el[4] == "signature":
-        label = tk.Label(GUI.canvas, text=el[5], width=4, font=("Arial", 12))
+        label = tk.Label(GUI.canvas, text=el[5], width=el[6], font=("Arial", 12))
         c.objects[el_index].insert(5, label)
         label.place(x=el[0], y=el[1])
     elif el[4] == "dash":
-        GUI.canvas.create_line(el[0], el[1], el[2], el[3], dash=(20, 20), fill=el[5], width=3)
-print(c.objects)
+        id = GUI.canvas.create_line(el[0], el[1], el[2], el[3], dash=(20, 20), fill=el[5], width=3)
+        el[6] = id # Замена идентификатора фигуры на новый
+print(f"new objects list: {c.objects}")
     
     
 

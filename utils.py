@@ -4,9 +4,12 @@ import GUI
 import config
 import text as txt
 import re
+import copy
 
 mouseX, mouseY = None, None # Временные координаты щелчка мыши
 creature = None # Временное сохранение фигуры
+color_flag = None
+dots = {"coords":[], "flags":[]} # Временное сохранение точек для кривой 
 
 def open_settings(): # Открытие меню настроек
     # Отображение элеиентов
@@ -25,17 +28,21 @@ def open_settings(): # Открытие меню настроек
     GUI.settings_minus_button.place(x=130, y=550)
     
 def lines(canvas, rate): # Отрисовка поля
+    global color_flag
     canvas.delete("all") # Очистка канвас
     for w in config.objects: # Удаление всех надписей
-        if re.match(r".!frame.!canvas.!label\d+", str(w[5])) or re.match(r".!frame.!canvas.!label", str(w[5])): # Выявление объектов tk.Label
-            print("Label detect")
-            w[5].place_forget()
-        else:
-            print(f"w5: '{str(w[5])}'")
+        try:
+            if re.match(r".!frame.!canvas.!label\d+", str(w[5])) or re.match(r".!frame.!canvas.!label", str(w[5])): # Выявление объектов tk.Label
+                print("Label detect")
+                w[5].place_forget()
+        except IndexError:
+            continue
+        
     config.objects.clear() # Очистка списка объектов
     # Количество линий для разного масштаба
     iterationx = [75, 38, 20, 10, 5] # по оси Х
     iterationy = [58, 29, 15, 8, 4] # по оси У
+    color_flag = canvas.create_rectangle(0, 0, 20, 20, fill=config.figure_color)
     
     if rate == 10: # Установка пары значений
         countx = iterationx[0]
@@ -76,8 +83,20 @@ def lines(canvas, rate): # Отрисовка поля
         y1 += rate
         y2 += rate
 
+def draw_curve(event): # Отрисовка кривой после нажатия Enter
+    global dots
+    id = GUI.canvas.create_line(dots["coords"], fill=config.figure_color, width=3)
+    for i in dots["flags"]:
+        GUI.canvas.delete(i)
+    config.objects.append([copy.deepcopy(dots["coords"]), "curve", id, config.figure_color])
+    dots["coords"] = []
+    dots["flags"] = []
+    print("curve was drawn")
+    print(config.objects)
+    config.win.unbind("<Return>")
+
 def create_figure_ON(event): # Зажатие клавиши при создании фигуры
-    global mouseX, mouseY, current_figureG, creature
+    global mouseX, mouseY, current_figureG, creature, dots
     mouseX, mouseY = event.x, event.y
     if config.current_figure == "rect": # Рисование квадрата
         creature = GUI.canvas.create_rectangle(mouseX, mouseY, mouseX, mouseY, outline=config.figure_color, width=3)
@@ -93,6 +112,11 @@ def create_figure_ON(event): # Зажатие клавиши при создан
         GUI.field_button.place(x=event.x+90, y=event.y)
     elif config.current_figure == "dash": # Рисование пунктира
         creature = GUI.canvas.create_line(mouseX, mouseY, mouseX, mouseY, dash=(20, 20), fill=config.figure_color, width=3)
+    elif config.current_figure == "curve": # Рисование прямой
+        config.win.bind("<Return>", draw_curve)
+        dots["coords"].append((mouseX, mouseY))
+        dots["flags"].append(GUI.canvas.create_oval(mouseX - 3, mouseY - 3, mouseX + 3, mouseY + 3, fill="gray"))
+        print(f"dots: {dots}")
     else:
         print(f"ERROR: Invalid figure code. {config.current_figure} does not exist")
 
@@ -103,9 +127,10 @@ def create_figure_OFF(event): # Масштабирование фигуры
     
     
 def save_figure(event):# Дополнительное сохранение фигуры
-    global mouseX, mouseY, current_figure, creature
-    config.objects.append([mouseX, mouseY, event.x, event.y, config.current_figure, config.figure_color, creature]) # Добавление информации о фигуре в список объектов
-    #print(config.objects)
+    global mouseX, mouseY, current_figure, creature, color_flag
+    if config.current_figure not in config.black_save:
+        config.objects.append([mouseX, mouseY, event.x, event.y, config.current_figure, config.figure_color, creature]) # Добавление информации о фигуре в список объектов
+    print(config.objects)
     
     if config.auto_color: # Автоматическая смена цвета
         if config.figure_color == "black":
@@ -116,39 +141,40 @@ def save_figure(event):# Дополнительное сохранение фи�
             config.figure_color = "blue"
         elif config.figure_color == "blue":
             config.figure_color = "black"
-        
+        GUI.canvas.itemconfig(color_flag, fill=config.figure_color)
     
 def del_last(event=None): # Удаление последнего объекта на поле
     try:
         obj = config.objects[-1]
-        if obj[4] != "signature":
+        if obj[1] == "curve":
+            GUI.canvas.delete(obj[2])
+            config.objects.remove(obj)
+        elif obj[4] != "signature":
             GUI.canvas.delete(obj[6])
             config.objects.remove(obj)
         else:
             obj[5].place_forget()
             print(f"o: {obj[5]}")
             config.objects.remove(obj)
-        print("last object removed")
     
-        print("last object removed")
     except IndexError:
-        print("Warn: No figures on the field!")
-    except Exception as e:
-       print(f"Error: {e}")
-       obj = config.objects[-1]
-       obj[5].place_forget()
-       print(f"o: {obj[5]}")
-       config.objects.remove(obj)
-       print("last object removed")
-    
+        print("Warn: No figures on the field or invalid index")
+
 def create_sign(): # Создание поля с подписью
     global mouseX, mouseY
     GUI.field_input.place_forget()
     GUI.field_button.place_forget()
     text = GUI.field_input.get()
-    label = tk.Label(GUI.canvas, text=text, width=4, font=("Arial", 12))
-    config.objects[-1][5] = label
-    config.objects[-1][6] = text
+    lenght = len(text)
+    print(lenght)
+    if lenght < 5:
+        width = 4
+    elif lenght >= 5 and lenght < 15:
+        width = 12
+    else:
+        width = 20
+    label = tk.Label(GUI.canvas, text=text, width=width, font=("Arial", 12))
+    config.objects.append([mouseX, mouseY, mouseX, mouseY, config.current_figure, label, text, width])
     label.place(x=mouseX, y=mouseY)
     print(config.objects)
     
@@ -156,22 +182,36 @@ def change_work_color(): # Вкл\выкл автоматическую смен
     config.auto_color = not config.auto_color
     if config.auto_color:
         config.figure_color = "black"
-        alert = txt.alert_auto_color1
+        GUI.canvas.itemconfig(color_flag, fill=config.figure_color)
+        alert = txt.alert_auto_color1 if config.language == "ru" else txt.alert_auto_color12
     else:
-        alert = txt.alert_auto_color2
-    messagebox.showinfo("Info", alert)
+        alert = txt.alert_auto_color2 if config.language == "ru" else txt.alert_auto_color22
+    messagebox.showinfo(txt.info if config.language == "ru" else txt.info2, alert)
+    
+def change_color(): # Кнопка смены цветов на основной панели
+    if config.figure_color == "black":
+        config.figure_color = "red"
+    elif config.figure_color == "red":
+        config.figure_color = "green"
+    elif config.figure_color == "green":
+        config.figure_color = "blue"
+    else:
+        config.figure_color = "black"
+    GUI.canvas.itemconfig(color_flag, fill=config.figure_color)
     
 def enter_color(): # Обработать пользовательский цвет
     user_color = GUI.settings_choose_color.get()
     if re.match(r"#\w+", user_color) and len(user_color) == 7:
         config.figure_color = user_color
         config.auto_color = False
-        messagebox.showinfo("Info", txt.user_color_alert)
+        GUI.canvas.itemconfig(color_flag, fill=config.figure_color)
+        messagebox.showinfo(txt.info if config.language == "ru" else txt.info2, txt.user_color_alert if config.language == "ru" else txt.user_color_alert2)
     elif user_color == "default":
         config.figure_color = "black"
-        messagebox.showinfo("Info", txt.user_color_alert2)
+        GUI.canvas.itemconfig(color_flag, fill=config.figure_color)
+        messagebox.showinfo(txt.info if config.language == "ru" else txt.info2, txt.user_color_alert2 if config.language == "ru" else txt.user_color_alert22)
     else:
-        messagebox.showerror("Error", txt.user_color_alert1)
+        messagebox.showerror(txt.error if config.language == "ru" else txt.error2, txt.user_color_alert1 if config.language == "ru" else txt.user_color_alert12)
     
 def scale(direction): # Изменение масштаба клеток
     old_value = config.scale
@@ -187,7 +227,7 @@ def scale(direction): # Изменение масштаба клеток
             print("WARN: invalid value 'config.scale'")
      
     if old_value != config.scale: # Проверка на совпадение масштаба
-        answer = messagebox.askokcancel("Confirmation", txt.settings_scale_alert)
+        answer = messagebox.askokcancel(txt.confirmation if config.language == "ru" else txt.confirmation2, txt.settings_scale_alert if config.language == "ru" else txt.settings_scale_alert2)
         if answer:
             lines(GUI.canvas, config.scale)
         

@@ -14,15 +14,17 @@ def resource_path(relative_path): # Получение правильного п
     return os.path.join(base_path, relative_path)
 
 win = tk.Tk()
-width, height = 1200, 650 # Размеры окна
-win.geometry(f"{width}x{height}+100+30")
+width, height = 1350, 850 # Размеры окна
+win.geometry(f"{width}x{height}+10+5")
+# win.attributes("-fullscreen", True)
 win.title("Апофема2D")
 iconPath = resource_path("img/Logo.ico") # Путь к иконке
 win.iconbitmap(iconPath)
-version = "v1.1" # Текущая версия приложения
+version = "v2.0" # Текущая версия приложения
+resource_link = "https://github.com/Denixel404/Apofema2D"
 
-#lock_color = False
-current_figure = "rect" #  Выбранная фигура
+draw = True # Рисование или масштабирование в режиме проектирования
+current_figure = None #  Выбранная фигура
 auto_color = True # Состояние автосмены цвета
 scale = 40 # Размер клеток на поле
 language = "ru" # Язык приложения

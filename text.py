@@ -32,6 +32,23 @@ user_color_alert2 = "Цвет возвращён по умолчанию"
 settings_scale = "Масштаб поля"
 settings_scale_descr = "Измените размер клеток на поле"
 settings_scale_alert = "Изменение масштаба полностью очистит поле. Продолжить?"
+design = "Проектирование"
+design_start = "Режим проектирования"
+design_descr = '''
+Нарисуйте фигуру на поле. Используйте
+для этого инструмент "Кривая".
+'''
+design_descr_error = '''
+Не удалось распознать фигуру
+на поле =(
+Попробуйте ещё раз или убедитесь,
+что всё сделали верно
+'''
+design_start_btn = "Анализ"
+dm_figure = "Не опознано"
+triangle = "Треугольник"
+angle = "Угол"
+rectangle = "Четырёхугольник" 
 
 # Английская версия
 error2 = "Error"
@@ -66,47 +83,5 @@ user_color_alert22 = "The default color is returned"
 settings_scale2 = "Field scale"
 settings_scale_descr2 = "Change the scale of the cells on the field"
 settings_scale_alert2 = "Changing the scale will completely clear the field. Continue?"
-
-# def lang(language):
-#     global settings, clear, last, rect, oval, line, dot, signature, enter, welcome, settings_rutext, settings_entext, settings_lang, dash
-#     global settings_lang_descr, work_color, 
-#     if language == "en":
-#         settings = "Settings"
-#         clear = "Clear all"
-#         last = "Undo changes"
-#         rect = "Rectangle"
-#         oval = "Oval"
-#         line = "Line"
-#         dot = "Point"
-#         signature = "Signature"
-#         dash = "Stipple"
-#         enter = "Enter"
-#         welcome = "Welcome to Apothema2D!"
-#         settings_lang = "Proramm Language"
-#         settings_rutext = "Russian"
-#         settings_entext = "English"
-#     elif language == "ru":
-#         settings = "Настройки"
-#         clear = "Очистить"
-#         last = "Отменить изменение"
-#         rect = "Квадрат"
-#         oval = "Овал"
-#         line = "Линия"
-#         dot = "Точка"
-#         signature = "Подпись"
-#         dash = "Пунктир"
-#         enter = "Ввод"
-#         welcome = "Добро пожаловать в Апофема2D"
-#         settings_lang = "Язык приложения"
-#         settings_rutext = "Русский"
-#         settings_entext = "Английский"
-        
-# def langRu():
-#     global welcome
-#     lang("ru")
-#     print(welcome)
-    
-# def langEn():
-#     global welcome
-#     lang("en")
-#     print(welcome)
+design2 = "Design mode"
+design_start2 = "Design mode"

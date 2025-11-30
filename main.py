@@ -4,6 +4,7 @@ import GUI
 import utils
 import json
 import text as txt
+import webbrowser
 
 #    Copyright (c) 2025 ITDenik
 
@@ -21,6 +22,9 @@ import text as txt
 
 
 # GUI.background.place(x=0, y=0)
+
+def open_git(event):
+    webbrowser.open_new(c.resource_link)
 
 # Загрузка данных при запуске
 try:
@@ -78,6 +82,7 @@ elif c.language == "en": # Английский перевод
     GUI.settings_choose_color_btn.configure(text=txt.enter2)
     GUI.settings_scale_text.configure(text=txt.settings_scale2)
     GUI.settings_scale_text_descr.configure(text=txt.settings_scale_descr2)
+    GUI.design_btn.configure(text=txt.design2)
 
 # Размещение объектов на экране
 GUI.barline.place(x=765, y=0, relheight=1, relwidth=1)
@@ -87,6 +92,7 @@ GUI.border_for_zone.place(x=0, y=100)
 GUI.base_logo.place(x=150, y=300)
 GUI.panel_title.place(x=70, y=20)
 GUI.version_title.place(x=500, y=650)
+GUI.github_link.place(x=10, y=620)
 
 GUI.sett_btn.place(x=0, y=0)
 GUI.rect_btn.place(x=78, y=0)
@@ -100,6 +106,7 @@ GUI.canvas.place(x=5, y=5)
 GUI.clear_btn.place(x=0, y=55)
 GUI.del_last_btn.place(x=78, y=55)
 GUI.color_btn.place(x=213, y=55)
+GUI.design_btn.place(x=348, y=55)
 
 # Разлиновка поля
 utils.lines(GUI.canvas, c.scale)
@@ -145,7 +152,8 @@ print(f"new objects list: {c.objects}")
 GUI.canvas.bind("<Button-1>", utils.create_figure_ON)
 GUI.canvas.bind("<B1-Motion>", utils.create_figure_OFF)
 GUI.canvas.bind("<ButtonRelease-1>", utils.save_figure)
-c.win.bind("<Control-z>", utils.del_last)
+GUI.github_link.bind("<Button-1>", open_git)
+#c.win.bind("<Control-z>", utils.del_last)
 
 c.win.protocol("WM_DELETE_WINDOW", save)
 c.win.mainloop()

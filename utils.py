@@ -2,9 +2,13 @@ import tkinter as tk
 from tkinter import messagebox
 import GUI
 import config
+import design_mode as dm
 import text as txt
+import json
 import re
 import copy
+import design_mode as dm
+import threading
 
 mouseX, mouseY = None, None # Временные координаты щелчка мыши
 creature = None # Временное сохранение фигуры
@@ -27,22 +31,28 @@ def open_settings(): # Открытие меню настроек
     GUI.settings_plus_button.place(x=20, y=550)
     GUI.settings_minus_button.place(x=130, y=550)
     
-def lines(canvas, rate): # Отрисовка поля
+def lines(canvas, rate, clear_all=True): # Отрисовка поля
     global color_flag
-    canvas.delete("all") # Очистка канвас
-    for w in config.objects: # Удаление всех надписей
-        try:
-            if re.match(r".!frame.!canvas.!label\d+", str(w[5])) or re.match(r".!frame.!canvas.!label", str(w[5])): # Выявление объектов tk.Label
-                print("Label detect")
-                w[5].place_forget()
-        except IndexError:
-            continue
-        
-    config.objects.clear() # Очистка списка объектов
+    if clear_all:
+        canvas.delete("all") # Очистка канвас
+        for w in config.objects: # Удаление всех надписей
+            try:
+                if re.match(r".!frame.!canvas.!label\d+", str(w[5])) or re.match(r".!frame.!canvas.!label", str(w[5])): # Выявление объектов tk.Label
+                    print("Label detect")
+                    w[5].place_forget()
+            except IndexError:
+                continue
+        config.objects.clear() # Очистка списка объектов
+    else:
+        with open("data/grid.json", "r") as f:
+            grid_d = json.load(f)
+        for line in grid_d:
+            canvas.delete(line)
     # Количество линий для разного масштаба
     iterationx = [75, 38, 20, 10, 5] # по оси Х
     iterationy = [58, 29, 15, 8, 4] # по оси У
     color_flag = canvas.create_rectangle(0, 0, 20, 20, fill=config.figure_color)
+    grid = []
     
     if rate == 10: # Установка пары значений
         countx = iterationx[0]
@@ -69,7 +79,8 @@ def lines(canvas, rate): # Отрисовка поля
     y2 = 577
     
     for line_y in range(countx): # Разлиновка поля по оси У
-        canvas.create_line(x1, y1, x2, y2)
+        line = canvas.create_line(x1, y1, x2, y2)
+        grid.append(line)
         x1 += rate
         x2 += rate
     
@@ -79,9 +90,13 @@ def lines(canvas, rate): # Отрисовка поля
     x2 = 747
     
     for line_x in range(county): # Разлиновка по оси Х
-        canvas.create_line(x1, y1, x2, y2)
+        line = canvas.create_line(x1, y1, x2, y2)
+        grid.append(line)
         y1 += rate
         y2 += rate
+    
+    with open(config.resource_path("data/grid.json"), "w") as f:
+        json.dump(grid, f)
 
 def draw_curve(event): # Отрисовка кривой после нажатия Enter
     global dots
@@ -114,7 +129,7 @@ def create_figure_ON(event): # Зажатие клавиши при создан
         creature = GUI.canvas.create_line(mouseX, mouseY, mouseX, mouseY, dash=(20, 20), fill=config.figure_color, width=3)
     elif config.current_figure == "curve": # Рисование прямой
         config.win.bind("<Return>", draw_curve)
-        dots["coords"].append((mouseX, mouseY))
+        dots["coords"].append([mouseX, mouseY])
         dots["flags"].append(GUI.canvas.create_oval(mouseX - 3, mouseY - 3, mouseX + 3, mouseY + 3, fill="gray"))
         print(f"dots: {dots}")
     else:
@@ -122,13 +137,15 @@ def create_figure_ON(event): # Зажатие клавиши при создан
 
 def create_figure_OFF(event): # Масштабирование фигуры
     global mouseX, mouseY, current_figure, creature
-    if config.current_figure in config.scaling:
+    if config.current_figure in config.scaling and config.draw:
         GUI.canvas.coords(creature, mouseX, mouseY, event.x, event.y) # Изменение размера фигуры
+    elif not config.draw:
+        dm.resize_vertex(event)
     
     
 def save_figure(event):# Дополнительное сохранение фигуры
     global mouseX, mouseY, current_figure, creature, color_flag
-    if config.current_figure not in config.black_save:
+    if config.current_figure not in config.black_save and config.draw: # Сохранение если фигура разрешена и если включен режим свободного рисования
         config.objects.append([mouseX, mouseY, event.x, event.y, config.current_figure, config.figure_color, creature]) # Добавление информации о фигуре в список объектов
     print(config.objects)
     
@@ -227,8 +244,11 @@ def scale(direction): # Изменение масштаба клеток
             print("WARN: invalid value 'config.scale'")
      
     if old_value != config.scale: # Проверка на совпадение масштаба
-        answer = messagebox.askokcancel(txt.confirmation if config.language == "ru" else txt.confirmation2, txt.settings_scale_alert if config.language == "ru" else txt.settings_scale_alert2)
-        if answer:
-            lines(GUI.canvas, config.scale)
+        lines(GUI.canvas, config.scale, False)
         
-        
+def open_design_mode():
+    print("open design mode")
+    
+def start_ai():
+    dm.analyze_figure()
+    

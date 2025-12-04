@@ -45,10 +45,15 @@ design_descr_error = '''
 что всё сделали верно
 '''
 design_start_btn = "Анализ"
+design_delf_btn = "Обозначать вершины"
 dm_figure = "Не опознано"
 triangle = "Треугольник"
 angle = "Угол"
-rectangle = "Четырёхугольник" 
+rectangle = "Четырёхугольник"
+square = "Квадрат" 
+parallelogram = "Параллелограмм"
+isoscelesT = "Равнобедренный треугольник"
+equilateralT = "Равносторонний треугольник"
 
 # Английская версия
 error2 = "Error"
@@ -85,3 +90,21 @@ settings_scale_descr2 = "Change the scale of the cells on the field"
 settings_scale_alert2 = "Changing the scale will completely clear the field. Continue?"
 design2 = "Design mode"
 design_start2 = "Design mode"
+design_descr2 = '''
+Draw a shape. Use instrument "Curve" 
+for it.
+'''
+design_descr_error2 = '''
+Couldn't find a piece on the field. =(
+Try again or make sure you
+did everything right'''
+design_start_btn2 = "Analyze"
+design_delf_btn2 = "Mark vertexes"
+dm_figure2 = "Figure not found"
+triangle2 = "Triangle"
+angle2 = "Angle"
+rectangle2 = "Rectangle"
+square2 = "Square" 
+parallelogram2 = "Parallelogram"
+isoscelesT2 = "isosceles triangle"
+equilateralT2 = "equilateral triangle"

@@ -20,7 +20,7 @@ win.geometry(f"{width}x{height}+10+5")
 win.title("Апофема2D")
 iconPath = resource_path("img/Logo.ico") # Путь к иконке
 win.iconbitmap(iconPath)
-version = "v2.0" # Текущая версия приложения
+version = "v2.1" # Текущая версия приложения
 resource_link = "https://github.com/Denixel404/Apofema2D"
 
 draw = True # Рисование или масштабирование в режиме проектирования

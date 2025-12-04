@@ -14,6 +14,8 @@ import threading
 toggle_settings = False # Флаг настроек
 toggle_design_mode = False # Флаг режима проектирования
 
+true_color = "#0FB978"
+false_color = "#D22B44"
 button_color = "#2E34A6" # Цвет кнопок
 Btext_color = "#FFFFFF" # Цвет текста на кнопках
 button_2stroke_color = "#062D68"
@@ -54,6 +56,7 @@ def settings(): # Открытие настроек
         design_btn.configure(bg=button_2stroke_color)
         design_descr.place_forget()
         design_start_btn.place_forget()
+        design_del_flags.place_forget()
         
         sett_btn.configure(bg=active_button_color_2)
         base_logo.place_forget()
@@ -118,13 +121,15 @@ def design(): # Открытие режима проектирования
         curve_btn.configure(bg=button_color)
         
         design_descr.place(x=30, y=100)
-        design_start_btn.place(x=190, y=350)
+        design_start_btn.place(x=30, y=350)
+        design_del_flags.place(x=110, y=350)
         dmode.start()
     elif not toggle_design_mode and not toggle_settings:
         c.draw = True
         design_btn.configure(bg=button_2stroke_color)
         panel_title.configure(text=txt.welcome if c.language == "ru" else txt.welcome2)
         design_descr.place_forget()
+        design_del_flags.place_forget()
         
         design_start_btn.place_forget()
         base_logo.place(x=150, y=300)
@@ -253,6 +258,7 @@ en_btn = tk.Button(sidebar, text=txt.settings_entext, width=10, height=3, font=m
 work_color_button = tk.Button(sidebar, text=txt.work_color, width=10, height=3, command=utils.change_work_color, bg=button_color, fg=Btext_color)
 
 # Режим проектирования
-design_descr = tk.Label(sidebar, bg=sidebar_color, text=txt.design_descr, font=BaseFont(20), fg=Btext_color)
+design_descr = tk.Label(sidebar, bg=sidebar_color, text=txt.design_descr, font=BaseFont(20), fg=Btext_color, justify="left")
 design_start_btn = tk.Button(sidebar, text=txt.design_start_btn, width=10, height=3, command=thread_dmode, bg=button_color, fg=Btext_color)
+design_del_flags = tk.Button(sidebar, text=txt.design_delf_btn, width=18, height=3, command=dmode.del_letters, bg=true_color, fg=Btext_color)
 

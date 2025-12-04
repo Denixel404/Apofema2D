@@ -83,6 +83,9 @@ elif c.language == "en": # Английский перевод
     GUI.settings_scale_text.configure(text=txt.settings_scale2)
     GUI.settings_scale_text_descr.configure(text=txt.settings_scale_descr2)
     GUI.design_btn.configure(text=txt.design2)
+    GUI.design_descr.configure(text=txt.design_descr2)
+    GUI.design_start_btn.configure(text=txt.design_start_btn2)
+    GUI.design_del_flags.configure(text=txt.design_delf_btn2)
 
 # Размещение объектов на экране
 GUI.barline.place(x=765, y=0, relheight=1, relwidth=1)
@@ -90,7 +93,7 @@ GUI.sidebar.place(x=10, y=0, relheight=1, relwidth=1)
 GUI.border_for_zone.place(x=0, y=100)
 
 GUI.base_logo.place(x=150, y=300)
-GUI.panel_title.place(x=70, y=20)
+GUI.panel_title.place(x=30, y=20)
 GUI.version_title.place(x=500, y=650)
 GUI.github_link.place(x=10, y=620)
 

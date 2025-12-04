@@ -44,10 +44,13 @@ def lines(canvas, rate, clear_all=True): # Отрисовка поля
                 continue
         config.objects.clear() # Очистка списка объектов
     else:
-        with open("data/grid.json", "r") as f:
-            grid_d = json.load(f)
-        for line in grid_d:
-            canvas.delete(line)
+        try:
+            with open(config.resource_path("data/grid.json"), "r") as f:
+                grid_d = json.load(f)
+            for line in grid_d:
+                canvas.delete(line)
+        except:
+            print("File grid.json was not open")
     # Количество линий для разного масштаба
     iterationx = [75, 38, 20, 10, 5] # по оси Х
     iterationy = [58, 29, 15, 8, 4] # по оси У

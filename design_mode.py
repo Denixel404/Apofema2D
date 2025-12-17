@@ -254,7 +254,7 @@ def analyze_figure(): # Анализировать фигуру на поле
 Углы (градусы): {angeles}
 Периметр: {P}
 Площадь: {S}
-    '''
+'''
     else:
         info = f'''
 Figure: {figure}

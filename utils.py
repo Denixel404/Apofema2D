@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, colorchooser
 import GUI
 import config
 import design_mode as dm
@@ -8,12 +8,14 @@ import json
 import re
 import copy
 import design_mode as dm
-import threading
 
+
+frame = 0 # количество кадров для хаотичной линии 
 mouseX, mouseY = None, None # Временные координаты щелчка мыши
 creature = None # Временное сохранение фигуры
-color_flag = None
-dots = {"coords":[], "flags":[]} # Временное сохранение точек для кривой 
+color_flag = None # Индикатор цвета
+dots = {"coords":[], "flags":[]} # Временное сохранение точек для кривой
+positions = [] # Временное сохранение координат для кисти
 
 def open_settings(): # Открытие меню настроек
     # Отображение элеиентов
@@ -24,8 +26,8 @@ def open_settings(): # Открытие меню настроек
     GUI.settings_work_color.place(x=20, y=270)
     GUI.settings_work_color_descr.place(x=20, y=310)
     GUI.work_color_button.place(x=20, y=370)
-    GUI.settings_choose_color.place(x=130, y=370)
-    GUI.settings_choose_color_btn.place(x=325, y=370)
+    GUI.settings_choose_color_btn.place(x=110, y=370)
+    GUI.settings_theme_btn.place(x=218, y=370)
     GUI.settings_scale_text.place(x=20, y=450)
     GUI.settings_scale_text_descr.place(x=20, y=490)
     GUI.settings_plus_button.place(x=20, y=550)
@@ -114,7 +116,7 @@ def draw_curve(event): # Отрисовка кривой после нажати
     config.win.unbind("<Return>")
 
 def create_figure_ON(event): # Зажатие клавиши при создании фигуры
-    global mouseX, mouseY, current_figureG, creature, dots
+    global mouseX, mouseY, current_figureG, creature, dots, positions
     mouseX, mouseY = event.x, event.y
     if config.current_figure == "rect": # Рисование квадрата
         creature = GUI.canvas.create_rectangle(mouseX, mouseY, mouseX, mouseY, outline=config.figure_color, width=3)
@@ -135,22 +137,71 @@ def create_figure_ON(event): # Зажатие клавиши при создан
         dots["coords"].append([mouseX, mouseY])
         dots["flags"].append(GUI.canvas.create_oval(mouseX - 3, mouseY - 3, mouseX + 3, mouseY + 3, fill="gray"))
         print(f"dots: {dots}")
+    elif config.current_figure == "brush":
+        positions.append((mouseX, mouseY))
+        positions.append((mouseX, mouseY))
+        creature = GUI.canvas.create_line(positions, fill=config.figure_color, width=3)
+    elif config.current_figure == "eraser":
+        objID = GUI.canvas.find_closest(x=event.x, y=event.y)
+        del_accept = True
+        
+        with open(config.resource_path("data/grid.json"), "r") as f:
+            grid = json.load(f) # Чтение файла с индентификаторами сетки
+        for id in grid:
+            if objID[0] == id:
+                del_accept = False
+        
+        if del_accept:
+            GUI.canvas.delete(objID)
+            for obj in config.objects:
+                if objID[0] in obj:
+                    config.objects.remove(obj)
+                    
+    elif config.current_figure == "filling":
+        objID = GUI.canvas.find_closest(x=event.x, y=event.y)
+        edit_accept = True
+        
+        with open(config.resource_path("data/grid.json"), "r") as f:
+            grid = json.load(f) # Чтение файла с индентификаторами сетки
+        for id in grid:
+            if objID[0] == id:
+                edit_accept = False
+        
+        if edit_accept:
+            GUI.canvas.itemconfig(objID, fill=config.figure_color)
+            for obj in config.objects:
+                if objID[0] in obj:
+                    figID = config.objects.index(obj)
+                    print(figID)
+                    if len(obj) == 9 and "line" not in obj and "dash" not in obj and "curve" not in obj and "brush" not in obj and "signature" not in obj:
+                        config.objects[figID][7] = True
+                        config.objects[figID][8] = config.figure_color        
     else:
         print(f"ERROR: Invalid figure code. {config.current_figure} does not exist")
 
 def create_figure_OFF(event): # Масштабирование фигуры
-    global mouseX, mouseY, current_figure, creature
+    global mouseX, mouseY, current_figure, creature, frame
     if config.current_figure in config.scaling and config.draw:
         GUI.canvas.coords(creature, mouseX, mouseY, event.x, event.y) # Изменение размера фигуры
     elif not config.draw:
         dm.resize_vertex(event)
-    
-    
+    elif config.current_figure == "brush" and config.draw:
+        frame += 1
+        if len(positions) <= 150 and frame % 5 == 0: # Ограничение кадров
+            positions.append((event.x, event.y))
+            creature = GUI.canvas.create_line(positions, fill=config.figure_color, width=3)
+      
 def save_figure(event):# Дополнительное сохранение фигуры
-    global mouseX, mouseY, current_figure, creature, color_flag
+    global mouseX, mouseY, current_figure, creature, color_flag, positions, frame
     if config.current_figure not in config.black_save and config.draw: # Сохранение если фигура разрешена и если включен режим свободного рисования
-        config.objects.append([mouseX, mouseY, event.x, event.y, config.current_figure, config.figure_color, creature]) # Добавление информации о фигуре в список объектов
-    print(config.objects)
+        config.objects.append([mouseX, mouseY, event.x, event.y, config.current_figure, config.figure_color, creature, False, None]) # Добавление информации о фигуре в список объектов
+    elif config.current_figure == "brush" and config.draw:
+        #positions = set(positions)
+        config.objects.append([[copy.deepcopy(positions)], config.current_figure, config.figure_color, creature]) # Добавление информации о хаотичной линии в список объектов
+        print(len(positions))
+        positions.clear()
+        frame = 0
+    #print(f"OBJECTS: {config.objects}")
     
     if config.auto_color: # Автоматическая смена цвета
         if config.figure_color == "black":
@@ -219,19 +270,13 @@ def change_color(): # Кнопка смены цветов на основной
         config.figure_color = "black"
     GUI.canvas.itemconfig(color_flag, fill=config.figure_color)
     
-def enter_color(): # Обработать пользовательский цвет
-    user_color = GUI.settings_choose_color.get()
-    if re.match(r"#\w+", user_color) and len(user_color) == 7:
-        config.figure_color = user_color
-        config.auto_color = False
+def enter_color(): # Обработать пользовательский цвет 
+    new_color = colorchooser.askcolor()[1] # Выбор цвета через интерфейс
+    if new_color != None:
+        config.figure_color = new_color
         GUI.canvas.itemconfig(color_flag, fill=config.figure_color)
-        messagebox.showinfo(txt.info if config.language == "ru" else txt.info2, txt.user_color_alert if config.language == "ru" else txt.user_color_alert2)
-    elif user_color == "default":
-        config.figure_color = "black"
-        GUI.canvas.itemconfig(color_flag, fill=config.figure_color)
-        messagebox.showinfo(txt.info if config.language == "ru" else txt.info2, txt.user_color_alert2 if config.language == "ru" else txt.user_color_alert22)
     else:
-        messagebox.showerror(txt.error if config.language == "ru" else txt.error2, txt.user_color_alert1 if config.language == "ru" else txt.user_color_alert12)
+        pass
     
 def scale(direction): # Изменение масштаба клеток
     old_value = config.scale

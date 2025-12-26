@@ -19,7 +19,7 @@ false_color = "#D22B44"
 button_color = "#2E34A6" # Цвет кнопок
 Btext_color = "#FFFFFF" # Цвет текста на кнопках
 button_2stroke_color = "#062D68"
-active_button_color = "#2E34A6" # Цвет включённых кнопок 1 группы
+active_button_color = "#3A8AE5" # Цвет включённых кнопок 1 группы
 active_button_color_2 = "#06728A" # Цвет включённых кнопок 2 группы
 sidebar_color = "#303848" # Цвет верхней панели
 barline_color = "#111E36" # Цвет боковой панели
@@ -42,8 +42,6 @@ git_link = git_link.subsample(9, 9)
 snowflake_path = c.resource_path("img/snowflake.png") # Путь к логотипу
 snowflake_pic = tk.PhotoImage(file=snowflake_path) # Логотип
 snowflake_pic = snowflake_pic.subsample(5, 5) # Изменить размер логотипа
-
-
 
 c.win.configure(bg="#1C2237") # Цвет окна
 
@@ -79,6 +77,7 @@ def settings(): # Открытие настроек
                 el.place_forget()
         utils.open_settings()
     else:
+        export_sett_btn.place_forget()
         ru_btn.place_forget()
         en_btn.place_forget()
         settings_lang.place_forget()
@@ -106,8 +105,7 @@ def settings(): # Открытие настроек
                 coords = ((85, 350), (140, 260), (230, 275), (330, 250), (410, 400))
                 el.place(x=coords[a][0], y=coords[a][1])
                 a += 1
-        
-        
+               
 def design(): # Открытие режима проектирования
     global toggle_design_mode, toggle_settings, sett_btn, base_logo, panel_title, button_color, base_logo
     toggle_design_mode = not toggle_design_mode
@@ -116,6 +114,7 @@ def design(): # Открытие режима проектирования
         sett_btn.configure(bg=button_2stroke_color)
         
         design_btn.configure(bg=active_button_color_2)
+        export_sett_btn.place_forget()
         base_logo.place_forget()
         settings_lang.place_forget()
         settings_lang_descr.place_forget()
@@ -254,7 +253,9 @@ def edit_theme(bgr, bz_s, bs, bc1, bca1, bc2, bca2, tc, set_name): # Смена 
     color_btn.configure(bg=button_2stroke_color, fg=Btext_color)
     design_btn.configure(bg=button_2stroke_color, fg=Btext_color)
     sett_btn.configure(bg=active_button_color_2, fg=Btext_color)
+    export_sett_btn.configure(bg=button_color, fg=Btext_color)
     
+    export_obj_btn.configure(bg=button_2stroke_color, fg=Btext_color)
     settings_lang.configure(bg=sidebar_color, fg=Btext_color)
     settings_lang_descr.configure(bg=sidebar_color, fg=Btext_color)
     ru_btn.configure(bg=button_color, fg=Btext_color)
@@ -282,134 +283,174 @@ def edit_theme(bgr, bz_s, bs, bc1, bca1, bc2, bca2, tc, set_name): # Смена 
     
 # Основные кнопки    
 def choose_rect(): # Выбор квадрата
-    c.current_figure = "rect"
-    rect_btn.configure(bg=active_button_color)
-    oval_btn.configure(bg=button_color)
-    line_btn.configure(bg=button_color)
-    dot_btn.configure(bg=button_color)
-    signature_btn.configure(bg=button_color)
-    dash_btn.configure(bg=button_color)
-    curve_btn.configure(bg=button_color)
-    brush_btn.configure(bg=button_color)
-    eraser_btn.configure(bg=button_color)
-    filling_btn.configure(bg=button_color)
+    if c.current_figure == "rect":
+        c.current_figure = None
+        rect_btn.configure(bg=button_color)
+    else:
+        c.current_figure = "rect"
+        rect_btn.configure(bg=active_button_color)
+        oval_btn.configure(bg=button_color)
+        line_btn.configure(bg=button_color)
+        dot_btn.configure(bg=button_color)
+        signature_btn.configure(bg=button_color)
+        dash_btn.configure(bg=button_color)
+        curve_btn.configure(bg=button_color)
+        brush_btn.configure(bg=button_color)
+        eraser_btn.configure(bg=button_color)
+        filling_btn.configure(bg=button_color)
     
 def choose_oval(): # Выбор овала
-    c.current_figure = "oval"
-    oval_btn.configure(bg=active_button_color)
-    rect_btn.configure(bg=button_color)
-    line_btn.configure(bg=button_color)
-    dot_btn.configure(bg=button_color)
-    signature_btn.configure(bg=button_color)
-    dash_btn.configure(bg=button_color)
-    curve_btn.configure(bg=button_color)
-    brush_btn.configure(bg=button_color)
-    eraser_btn.configure(bg=button_color)
-    filling_btn.configure(bg=button_color)
+    if c.current_figure == "oval":
+        c.current_figure = None
+        oval_btn.configure(bg=button_color)
+    else:
+        c.current_figure = "oval"
+        oval_btn.configure(bg=active_button_color)
+        rect_btn.configure(bg=button_color)
+        line_btn.configure(bg=button_color)
+        dot_btn.configure(bg=button_color)
+        signature_btn.configure(bg=button_color)
+        dash_btn.configure(bg=button_color)
+        curve_btn.configure(bg=button_color)
+        brush_btn.configure(bg=button_color)
+        eraser_btn.configure(bg=button_color)
+        filling_btn.configure(bg=button_color)
     
 def choose_line(): # Выбор линии
-    c.current_figure = "line"
-    line_btn.configure(bg=active_button_color)
-    rect_btn.configure(bg=button_color)
-    oval_btn.configure(bg=button_color)
-    dot_btn.configure(bg=button_color)
-    signature_btn.configure(bg=button_color)
-    dash_btn.configure(bg=button_color)
-    curve_btn.configure(bg=button_color)
-    brush_btn.configure(bg=button_color)
-    eraser_btn.configure(bg=button_color)
-    filling_btn.configure(bg=button_color)
+    if c.current_figure == "line":
+        c.current_figure = None
+        line_btn.configure(bg=button_color)
+    else:
+        c.current_figure = "line"
+        line_btn.configure(bg=active_button_color)
+        rect_btn.configure(bg=button_color)
+        oval_btn.configure(bg=button_color)
+        dot_btn.configure(bg=button_color)
+        signature_btn.configure(bg=button_color)
+        dash_btn.configure(bg=button_color)
+        curve_btn.configure(bg=button_color)
+        brush_btn.configure(bg=button_color)
+        eraser_btn.configure(bg=button_color)
+        filling_btn.configure(bg=button_color)
 
 def choose_dot(): # Выбор точки
-    c.current_figure = "dot"
-    dot_btn.configure(bg=active_button_color)
-    line_btn.configure(bg=button_color)
-    rect_btn.configure(bg=button_color)
-    oval_btn.configure(bg=button_color)
-    signature_btn.configure(bg=button_color)
-    dash_btn.configure(bg=button_color)
-    curve_btn.configure(bg=button_color)
-    brush_btn.configure(bg=button_color)
-    eraser_btn.configure(bg=button_color)
-    filling_btn.configure(bg=button_color)
+    if c.current_figure == "dot":
+        c.current_figure = None
+        dot_btn.configure(bg=button_color)
+    else:
+        c.current_figure = "dot"
+        dot_btn.configure(bg=active_button_color)
+        line_btn.configure(bg=button_color)
+        rect_btn.configure(bg=button_color)
+        oval_btn.configure(bg=button_color)
+        signature_btn.configure(bg=button_color)
+        dash_btn.configure(bg=button_color)
+        curve_btn.configure(bg=button_color)
+        brush_btn.configure(bg=button_color)
+        eraser_btn.configure(bg=button_color)
+        filling_btn.configure(bg=button_color)
     
 def choose_sign(): # Выбор подписи
-    c.current_figure = "signature"
-    signature_btn.configure(bg=active_button_color)
-    dot_btn.configure(bg=button_color)
-    line_btn.configure(bg=button_color)
-    rect_btn.configure(bg=button_color)
-    oval_btn.configure(bg=button_color)
-    dash_btn.configure(bg=button_color)
-    curve_btn.configure(bg=button_color)
-    brush_btn.configure(bg=button_color)
-    eraser_btn.configure(bg=button_color)
-    filling_btn.configure(bg=button_color)
+    if c.current_figure == "signature":
+        c.current_figure = None
+        signature_btn.configure(bg=button_color)
+    else:
+        c.current_figure = "signature"
+        signature_btn.configure(bg=active_button_color)
+        dot_btn.configure(bg=button_color)
+        line_btn.configure(bg=button_color)
+        rect_btn.configure(bg=button_color)
+        oval_btn.configure(bg=button_color)
+        dash_btn.configure(bg=button_color)
+        curve_btn.configure(bg=button_color)
+        brush_btn.configure(bg=button_color)
+        eraser_btn.configure(bg=button_color)
+        filling_btn.configure(bg=button_color)
     
 def choose_dash(): # Выбор пунктира
-   c.current_figure = "dash"
-   dash_btn.configure(bg=active_button_color)
-   signature_btn.configure(bg=button_color)
-   dot_btn.configure(bg=button_color)
-   line_btn.configure(bg=button_color)
-   rect_btn.configure(bg=button_color)
-   oval_btn.configure(bg=button_color)
-   curve_btn.configure(bg=button_color)
-   brush_btn.configure(bg=button_color)
-   eraser_btn.configure(bg=button_color)
-   filling_btn.configure(bg=button_color)
+    if c.current_figure == "dash":
+        c.current_figure = None
+        dash_btn.configure(bg=button_color)
+    else:
+        c.current_figure = "dash"
+        dash_btn.configure(bg=active_button_color)
+        signature_btn.configure(bg=button_color)
+        dot_btn.configure(bg=button_color)
+        line_btn.configure(bg=button_color)
+        rect_btn.configure(bg=button_color)
+        oval_btn.configure(bg=button_color)
+        curve_btn.configure(bg=button_color)
+        brush_btn.configure(bg=button_color)
+        eraser_btn.configure(bg=button_color)
+        filling_btn.configure(bg=button_color)
    
 def choose_curve(): # Выбор кривой
-   c.current_figure = "curve"
-   curve_btn.configure(bg=active_button_color)
-   dash_btn.configure(bg=button_color)
-   signature_btn.configure(bg=button_color)
-   dot_btn.configure(bg=button_color)
-   line_btn.configure(bg=button_color)
-   rect_btn.configure(bg=button_color)
-   oval_btn.configure(bg=button_color)
-   brush_btn.configure(bg=button_color)
-   eraser_btn.configure(bg=button_color)
-   filling_btn.configure(bg=button_color)
+    if c.current_figure == "curve":
+        c.current_figure = None
+        curve_btn.configure(bg=button_color)
+    else:
+        c.current_figure = "curve"
+        curve_btn.configure(bg=active_button_color)
+        dash_btn.configure(bg=button_color)
+        signature_btn.configure(bg=button_color)
+        dot_btn.configure(bg=button_color)
+        line_btn.configure(bg=button_color)
+        rect_btn.configure(bg=button_color)
+        oval_btn.configure(bg=button_color)
+        brush_btn.configure(bg=button_color)
+        eraser_btn.configure(bg=button_color)
+        filling_btn.configure(bg=button_color)
 
 def choose_brush():
-   c.current_figure = "brush"
-   brush_btn.configure(bg=active_button_color)
-   curve_btn.configure(bg=button_color)
-   dash_btn.configure(bg=button_color)
-   signature_btn.configure(bg=button_color)
-   dot_btn.configure(bg=button_color)
-   line_btn.configure(bg=button_color)
-   rect_btn.configure(bg=button_color)
-   oval_btn.configure(bg=button_color)
-   eraser_btn.configure(bg=button_color)
-   filling_btn.configure(bg=button_color)
+   if c.current_figure == "brush":
+        c.current_figure = None
+        brush_btn.configure(bg=button_color)
+   else:
+        c.current_figure = "brush"
+        brush_btn.configure(bg=active_button_color)
+        curve_btn.configure(bg=button_color)
+        dash_btn.configure(bg=button_color)
+        signature_btn.configure(bg=button_color)
+        dot_btn.configure(bg=button_color)
+        line_btn.configure(bg=button_color)
+        rect_btn.configure(bg=button_color)
+        oval_btn.configure(bg=button_color)
+        eraser_btn.configure(bg=button_color)
+        filling_btn.configure(bg=button_color)
 
 def choose_eraser():
-   c.current_figure = "eraser"
-   eraser_btn.configure(bg=active_button_color)
-   brush_btn.configure(bg=button_color)
-   curve_btn.configure(bg=button_color)
-   dash_btn.configure(bg=button_color)
-   signature_btn.configure(bg=button_color)
-   dot_btn.configure(bg=button_color)
-   line_btn.configure(bg=button_color)
-   rect_btn.configure(bg=button_color)
-   oval_btn.configure(bg=button_color)
-   filling_btn.configure(bg=button_color)
+    if c.current_figure == "eraser":
+        c.current_figure = None
+        eraser_btn.configure(bg=button_color)
+    else:
+        c.current_figure = "eraser"
+        eraser_btn.configure(bg=active_button_color)
+        brush_btn.configure(bg=button_color)
+        curve_btn.configure(bg=button_color)
+        dash_btn.configure(bg=button_color)
+        signature_btn.configure(bg=button_color)
+        dot_btn.configure(bg=button_color)
+        line_btn.configure(bg=button_color)
+        rect_btn.configure(bg=button_color)
+        oval_btn.configure(bg=button_color)
+        filling_btn.configure(bg=button_color)
 
 def choose_filling():
-   c.current_figure = "filling"
-   filling_btn.configure(bg=active_button_color)
-   eraser_btn.configure(bg=button_color)
-   brush_btn.configure(bg=button_color)
-   curve_btn.configure(bg=button_color)
-   dash_btn.configure(bg=button_color)
-   signature_btn.configure(bg=button_color)
-   dot_btn.configure(bg=button_color)
-   line_btn.configure(bg=button_color)
-   rect_btn.configure(bg=button_color)
-   oval_btn.configure(bg=button_color)           
+    if c.current_figure == "filling":
+        c.current_figure = None
+        filling_btn.configure(bg=button_color)
+    else:
+        c.current_figure = "filling"
+        filling_btn.configure(bg=active_button_color)
+        eraser_btn.configure(bg=button_color)
+        brush_btn.configure(bg=button_color)
+        curve_btn.configure(bg=button_color)
+        dash_btn.configure(bg=button_color)
+        signature_btn.configure(bg=button_color)
+        dot_btn.configure(bg=button_color)
+        line_btn.configure(bg=button_color)
+        rect_btn.configure(bg=button_color)
+        oval_btn.configure(bg=button_color)           
 
 # Поле        
 border_for_zone = tk.Frame(c.win, bg="#3C465A", width=765, height=595)
@@ -420,6 +461,7 @@ sett_btn = tk.Button(c.win, text=txt.settings, width=10, height=2, command=setti
 clear_btn = tk.Button(c.win, text=txt.clear, width=10, height=2, command=lambda: utils.lines(canvas, c.scale), bg=button_2stroke_color, activebackground="#E92E2E", fg=Btext_color)
 del_last_btn = tk.Button(c.win, text=txt.last, width=18, height=2, command=lambda: utils.del_last(), bg=button_2stroke_color, activebackground="#E92E2E", fg=Btext_color)
 color_btn = tk.Button(c.win, text=txt.change_color, width=18, height=2, command=lambda: utils.change_color(), bg=button_2stroke_color, activebackground=active_button_color, fg=Btext_color)
+export_obj_btn = tk.Button(c.win, text=txt.export_objects, width=23, height=2, command=utils.export_objects, bg=button_color, fg=Btext_color)
 design_btn = tk.Button(c.win, text=txt.design, width=18, height=2, command=design, bg="#062D68", activebackground=active_button_color, fg=Btext_color)
 rect_btn = tk.Button(c.win, text=txt.rect, width=10, height=3, command=choose_rect, bg=button_color, fg=Btext_color)
 oval_btn = tk.Button(c.win, text=txt.oval, width=10, height=3, command=choose_oval, bg=button_color, fg=Btext_color)
@@ -445,6 +487,7 @@ field_button = tk.Button(canvas, text=txt.enter, height=1, bg="#B4F7F4", command
 # Панель настроек
 panel_title = tk.Label(sidebar, bg=sidebar_color, text=txt.welcome, font=BaseFont(20), fg=Btext_color, anchor="center")
 version_title = tk.Label(sidebar, bg=sidebar_color, text=c.version, font=BaseFont(20), fg=Btext_color, anchor="center")
+export_sett_btn = tk.Button(sidebar, text=txt.export_settings, width=23, height=2, command=utils.export_settings, bg=button_2stroke_color, fg=Btext_color)
 settings_lang = tk.Label(sidebar, bg=sidebar_color, text=txt.settings_lang, font=BaseFont(20), fg=Btext_color, anchor="center")
 settings_lang_descr = tk.Label(sidebar, bg=sidebar_color, text=txt.settings_lang_descr, font=BaseFont(15), fg=Btext_color, anchor="center")
 settings_work_color = tk.Label(sidebar, bg=sidebar_color, text=txt.settings_work_color, font=BaseFont(20), fg=Btext_color, anchor="center")
@@ -465,7 +508,7 @@ design_start_btn = tk.Button(sidebar, text=txt.design_start_btn, width=10, heigh
 design_del_flags = tk.Button(sidebar, text=txt.design_delf_btn, width=18, height=3, command=dmode.del_letters, bg=true_color, fg=Btext_color)
 
 # Окно с темами
-theme_std_btn = tk.Button(sidebar, text=txt.standart_theme, width=10, height=3, command=lambda: edit_theme("#1C2237", "#303848", "#111E36", "#2E34A6", "#2E34A6", "#062D68", "#06728A", "#FFFFFF", "standart"), bg=button_color, fg=Btext_color)
+theme_std_btn = tk.Button(sidebar, text=txt.standart_theme, width=10, height=3, command=lambda: edit_theme("#1C2237", "#303848", "#111E36", "#2E34A6", "#3A8AE5", "#062D68", "#06728A", "#FFFFFF", "standart"), bg=button_color, fg=Btext_color)
 theme_christmas_btn = tk.Button(sidebar, text=txt.HNY_theme, width=10, height=3, command=lambda: edit_theme("#0C2B3E","#1A3B4F", "#2E7D32", "#2E6A95", "#4A90C2", "#B33A3A", "#D95D5D", "#FFFFFF", "christmas"), bg=button_color, fg=Btext_color)
 theme_dark_btn = tk.Button(sidebar, text=txt.dark_theme, width=10, height=3, command=lambda: edit_theme("#121212", "#1E1E1E", "#0A0A0A", "#2D2D2D", "#3D3D3D", "#252525", "#353535", "#FFFFFF", "dark"), bg=button_color, fg=Btext_color)
 theme_light_btn = tk.Button(sidebar, text=txt.light_theme, width=10, height=3, command=lambda: edit_theme("#F5F5F5", "#E0E0E0", "#BDBDBD", "#EEEEEE", "#E0E0E0", "#E8E8E8", "#D5D5D5", "#000000", "light"), bg=button_color, fg=Btext_color)

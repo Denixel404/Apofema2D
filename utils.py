@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, colorchooser
+from tkinter import messagebox, colorchooser, filedialog
 import GUI
 import config
 import design_mode as dm
@@ -8,6 +8,9 @@ import json
 import re
 import copy
 import design_mode as dm
+import subprocess
+import sys
+import os
 
 
 frame = 0 # количество кадров для хаотичной линии 
@@ -20,6 +23,7 @@ positions = [] # Временное сохранение координат дл
 def open_settings(): # Открытие меню настроек
     # Отображение элеиентов
     GUI.settings_lang.place(x=20, y=90)
+    GUI.export_sett_btn.place(x=350, y=20)
     GUI.settings_lang_descr.place(x=20, y=130)
     GUI.ru_btn.place(x=20, y=190)
     GUI.en_btn.place(x=130, y=190)
@@ -195,7 +199,7 @@ def save_figure(event):# Дополнительное сохранение фи�
     global mouseX, mouseY, current_figure, creature, color_flag, positions, frame
     if config.current_figure not in config.black_save and config.draw: # Сохранение если фигура разрешена и если включен режим свободного рисования
         config.objects.append([mouseX, mouseY, event.x, event.y, config.current_figure, config.figure_color, creature, False, None]) # Добавление информации о фигуре в список объектов
-    elif config.current_figure == "brush" and config.draw:
+    elif config.current_figure == "brush" and config.draw and config.current_figure != None:
         #positions = set(positions)
         config.objects.append([[copy.deepcopy(positions)], config.current_figure, config.figure_color, creature]) # Добавление информации о хаотичной линии в список объектов
         print(len(positions))
@@ -203,7 +207,7 @@ def save_figure(event):# Дополнительное сохранение фи�
         frame = 0
     #print(f"OBJECTS: {config.objects}")
     
-    if config.auto_color: # Автоматическая смена цвета
+    if config.auto_color and config.current_figure != None: # Автоматическая смена цвета
         if config.figure_color == "black":
             config.figure_color = "red"
         elif config.figure_color == "red":
@@ -213,6 +217,8 @@ def save_figure(event):# Дополнительное сохранение фи�
         elif config.figure_color == "blue":
             config.figure_color = "black"
         GUI.canvas.itemconfig(color_flag, fill=config.figure_color)
+    
+    config.trash() # Чистка мусора в списке объектов
     
 def del_last(event=None): # Удаление последнего объекта на поле
     try:
@@ -299,4 +305,51 @@ def open_design_mode():
     
 def start_ai():
     dm.analyze_figure()
+
+def export_settings(): # Экспорт json-файла с настройками
+    settings_file = filedialog.askopenfilename()
+    directories = settings_file.split("/")
     
+    if directories[-1] == "settings.json":
+        ask_restart = messagebox.askokcancel(txt.info if config.language == "ru" else txt.info2, txt.restart if config.language == "ru" else txt.restart2)
+        if ask_restart:
+            config.settings_file = settings_file
+            
+            with open(config.resource_path("data/paths.json"), "w") as f:
+                paths = [config.settings_file, config.objects_file]
+                json.dump(paths, f)
+                
+            print(settings_file)
+            print(config.settings_file)
+            config.win.destroy()
+            subprocess.call([sys.executable] + sys.argv) # Перезапуск программы
+            sys.exit()
+    elif directories[-1] == "":
+        pass
+    else:
+        messagebox.showerror(txt.error if config.language == "ru" else txt.error2, txt.file_error if config.language == "ru" else txt.file_error2)
+        
+def export_objects(): # Экспорт json-файла с объектами для отрисовки
+    objects_file = filedialog.askopenfilename()
+    directories = objects_file.split("/")
+    
+    if directories[-1] == "objects.json":
+        ask_restart = messagebox.askokcancel(txt.info if config.language == "ru" else txt.info2, txt.restart if config.language == "ru" else txt.restart2)
+        if ask_restart:
+            config.objects_file = objects_file
+            
+            with open(config.resource_path("data/paths.json"), "w") as f:
+                paths = [config.settings_file, config.objects_file]
+                json.dump(paths, f)
+                
+            print(objects_file)
+            print(config.objects_file)
+            config.win.destroy()
+            subprocess.call([sys.executable] + sys.argv)
+            sys.exit()
+    elif directories[-1] == "":
+        pass
+    
+    else:
+        messagebox.showerror(txt.error if config.language == "ru" else txt.error2, txt.file_error if config.language == "ru" else txt.file_error2)
+   

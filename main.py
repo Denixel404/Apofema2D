@@ -5,9 +5,9 @@ import utils
 import json
 import text as txt
 import webbrowser
-import random as rd
+import threading
 
-#    Copyright (c) 2025 ITDenik
+#    Copyright (c) 2025 Denixel404
 
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -21,13 +21,31 @@ import random as rd
 #    See the License for the specific language governing permissions and
 #    limitations under the Licens
 
+def Debug(): # Режим отладки для одновременной работы с приложением в консоли
+    while True:
+        print("Режим отладки активен")
+        command = input("Введите команду: ")
+        try:
+            if command == "exit": # Выйти из режима отладки
+                print("Вы вышли из режима отладки")
+                return
+            
+            print(eval(command)) # Выполнить код или показать переменную
+        except Exception as e:
+            print("Ошибка при вводе команды")
+            print(e)
 
 def open_git(event): # Открытие ссылки на Гитхаб
     webbrowser.open_new(c.resource_link)
 
 # Загрузка данных при запуске
 try:
-    with open("settings.json", "r") as f: # Чтение файла с настройками программы
+    with open(c.resource_path("data/paths.json"), "r") as f:
+        paths = json.load(f)
+        c.settings_file = paths[0]
+        c.objects_file = paths[1]
+        print(c.settings_file)
+    with open(c.settings_file, "r") as f: # Чтение файла с настройками программы
         # Установка сохранённых значений 
         download = json.load(f)
         c.figure_color = download[0]
@@ -73,6 +91,8 @@ elif c.language == "en": # Английский перевод виджетов
     GUI.eraser_btn.configure(text=txt.eraser2)
     GUI.clear_btn.configure(text=txt.clear2)
     GUI.color_btn.configure(text=txt.change_color2)
+    GUI.export_obj_btn.configure(text=txt.export_objects2)
+    GUI.export_sett_btn.configure(text=txt.export_settings2)
     GUI.del_last_btn.configure(text=txt.last2)
     GUI.line_btn.configure(text=txt.line2)
     GUI.panel_title.configure(text=txt.welcome2)
@@ -144,12 +164,14 @@ GUI.clear_btn.place(x=0, y=55)
 GUI.del_last_btn.place(x=78, y=55)
 GUI.color_btn.place(x=213, y=55)
 GUI.design_btn.place(x=348, y=55)
+GUI.export_obj_btn.place(x=563, y=55)
+
 
 # Разлиновка поля
 utils.lines(GUI.canvas, c.scale)
 
 try: # Загрузка объектов на поле
-    with open("objects.json", "r") as f: #
+    with open(c.objects_file, "r") as f: #
         c.objects = json.load(f)
     print("objects loaded")
 except Exception as e:
@@ -198,6 +220,10 @@ GUI.canvas.bind("<Button-1>", utils.create_figure_ON)
 GUI.canvas.bind("<B1-Motion>", utils.create_figure_OFF)
 GUI.canvas.bind("<ButtonRelease-1>", utils.save_figure)
 GUI.github_link.bind("<Button-1>", open_git)
+
+if c.debug:
+    console_thread = threading.Thread(target=Debug)
+    console_thread.start()
 
 c.win.protocol("WM_DELETE_WINDOW", save)
 c.win.mainloop()

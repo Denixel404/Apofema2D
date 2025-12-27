@@ -40,7 +40,7 @@ def open_git(event): # Открытие ссылки на Гитхаб
 
 # Загрузка данных при запуске
 try:
-    with open(c.resource_path("data/paths.json"), "r") as f:
+    with open("data/paths.json", "r") as f:
         paths = json.load(f)
         c.settings_file = paths[0]
         c.objects_file = paths[1]
@@ -73,6 +73,7 @@ def save(): # Выгрузка и сохранение данных при за�
     except Exception as e:
         print(f"SAVE ERROR: {e}")
     c.win.destroy() # Закрытие окна
+    c.win.quit()
    
 # Обновление языка приложения
 if c.language == "ru": 
@@ -222,7 +223,7 @@ GUI.canvas.bind("<ButtonRelease-1>", utils.save_figure)
 GUI.github_link.bind("<Button-1>", open_git)
 
 if c.debug:
-    console_thread = threading.Thread(target=Debug)
+    console_thread = threading.Thread(target=Debug, daemon=True)
     console_thread.start()
 
 c.win.protocol("WM_DELETE_WINDOW", save)

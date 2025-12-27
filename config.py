@@ -1,6 +1,9 @@
 import tkinter as tk
 import sys
 import os
+import time
+import gc
+import subprocess
 
 # Компиляция
 # pyinstaller Apofema2D.spec
@@ -50,4 +53,13 @@ def trash(): # Удаление и чистка ненужных данных в
                 print(f"Объект {obj} удалён")
         except IndexError:
             pass
-                
+
+def restart():
+    win.destroy()
+    win.quit()
+    win.update()
+    
+    time.sleep(1)
+    gc.collect()
+    sys.exit(2)
+                  

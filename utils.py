@@ -11,6 +11,8 @@ import design_mode as dm
 import subprocess
 import sys
 import os
+import gc
+import time
 
 
 frame = 0 # количество кадров для хаотичной линии 
@@ -315,15 +317,13 @@ def export_settings(): # Экспорт json-файла с настройкам�
         if ask_restart:
             config.settings_file = settings_file
             
-            with open(config.resource_path("data/paths.json"), "w") as f:
+            with open("data/paths.json", "w") as f:
                 paths = [config.settings_file, config.objects_file]
                 json.dump(paths, f)
                 
             print(settings_file)
             print(config.settings_file)
-            config.win.destroy()
-            subprocess.call([sys.executable] + sys.argv) # Перезапуск программы
-            sys.exit()
+            config.restart() # Перезапуск программы
     elif directories[-1] == "":
         pass
     else:
@@ -338,15 +338,13 @@ def export_objects(): # Экспорт json-файла с объектами д�
         if ask_restart:
             config.objects_file = objects_file
             
-            with open(config.resource_path("data/paths.json"), "w") as f:
+            with open("data/paths.json", "w") as f:
                 paths = [config.settings_file, config.objects_file]
                 json.dump(paths, f)
                 
             print(objects_file)
             print(config.objects_file)
-            config.win.destroy()
-            subprocess.call([sys.executable] + sys.argv)
-            sys.exit()
+            config.restart()
     elif directories[-1] == "":
         pass
     

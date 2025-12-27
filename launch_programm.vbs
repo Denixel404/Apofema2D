@@ -1,0 +1,1 @@
+CreateObject("WScript.Shell").Run "Apothema2D_start.bat", 0, False

@@ -47,7 +47,7 @@ c.win.configure(bg="#1C2237") # Цвет окна
 
 labels = [] # Список временных виджетов
 def thread_dmode():
-    analyze_thread = threading.Thread(target=dmode.analyze_figure)
+    analyze_thread = threading.Thread(target=dmode.analyze_figure, daemon=True)
     analyze_thread.start()
 
 def BaseFont(size): # Получение основного шрифта
@@ -461,7 +461,7 @@ sett_btn = tk.Button(c.win, text=txt.settings, width=10, height=2, command=setti
 clear_btn = tk.Button(c.win, text=txt.clear, width=10, height=2, command=lambda: utils.lines(canvas, c.scale), bg=button_2stroke_color, activebackground="#E92E2E", fg=Btext_color)
 del_last_btn = tk.Button(c.win, text=txt.last, width=18, height=2, command=lambda: utils.del_last(), bg=button_2stroke_color, activebackground="#E92E2E", fg=Btext_color)
 color_btn = tk.Button(c.win, text=txt.change_color, width=18, height=2, command=lambda: utils.change_color(), bg=button_2stroke_color, activebackground=active_button_color, fg=Btext_color)
-export_obj_btn = tk.Button(c.win, text=txt.export_objects, width=23, height=2, command=utils.export_objects, bg=button_color, fg=Btext_color)
+export_obj_btn = tk.Button(c.win, text=txt.export_objects, width=23, height=2, command=utils.export_objects, bg=button_2stroke_color, fg=Btext_color)
 design_btn = tk.Button(c.win, text=txt.design, width=18, height=2, command=design, bg="#062D68", activebackground=active_button_color, fg=Btext_color)
 rect_btn = tk.Button(c.win, text=txt.rect, width=10, height=3, command=choose_rect, bg=button_color, fg=Btext_color)
 oval_btn = tk.Button(c.win, text=txt.oval, width=10, height=3, command=choose_oval, bg=button_color, fg=Btext_color)
@@ -487,7 +487,7 @@ field_button = tk.Button(canvas, text=txt.enter, height=1, bg="#B4F7F4", command
 # Панель настроек
 panel_title = tk.Label(sidebar, bg=sidebar_color, text=txt.welcome, font=BaseFont(20), fg=Btext_color, anchor="center")
 version_title = tk.Label(sidebar, bg=sidebar_color, text=c.version, font=BaseFont(20), fg=Btext_color, anchor="center")
-export_sett_btn = tk.Button(sidebar, text=txt.export_settings, width=23, height=2, command=utils.export_settings, bg=button_2stroke_color, fg=Btext_color)
+export_sett_btn = tk.Button(sidebar, text=txt.export_settings, width=23, height=2, command=utils.export_settings, bg=button_color, fg=Btext_color)
 settings_lang = tk.Label(sidebar, bg=sidebar_color, text=txt.settings_lang, font=BaseFont(20), fg=Btext_color, anchor="center")
 settings_lang_descr = tk.Label(sidebar, bg=sidebar_color, text=txt.settings_lang_descr, font=BaseFont(15), fg=Btext_color, anchor="center")
 settings_work_color = tk.Label(sidebar, bg=sidebar_color, text=txt.settings_work_color, font=BaseFont(20), fg=Btext_color, anchor="center")
